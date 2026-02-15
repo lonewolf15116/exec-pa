@@ -68,3 +68,14 @@ def mark_done(task_id: int, db: Session = Depends(get_db)):
     db.refresh(task)
 
     return task
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int, db: Session = Depends(get_db)):
+    task = db.query(Task).filter(Task.id == task_id).first()
+
+    if not task:
+        return {"error": "Task not found"}
+
+    db.delete(task)
+    db.commit()
+    return {"ok": True}
